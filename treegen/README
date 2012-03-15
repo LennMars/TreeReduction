@@ -1,0 +1,7 @@
+Requirements:
+OCaml 3.12.1
+make (or omake)
+
+Running:
+To obtain a test data same to main/sample.in, execute
+./tree_util.opt -p 4 -n 20 -d 0.5

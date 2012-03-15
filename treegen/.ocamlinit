@@ -1,0 +1,14 @@
+#use "topfind"
+#require "unix"
+#directory "~/workspace/TreeReduction/ml/"
+#load "util.cmo"
+#load "tree.cmo"
+#load "treeSerialize.cmo"
+#load "treeReduction.cmo"
+#load "treeGenerate.cmo"
+#use "main.ml"
+
+open Tree
+open TreeSerialize
+open TreeReduction
+open TreeGenerate

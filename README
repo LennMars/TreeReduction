@@ -1,0 +1,19 @@
+Outline:
+Distributed parallel tree reduction algorithm with Hadoop MapReduce based on:
+-Kazuhiko Kakehi, Kiminori Matsuzaki, and Kento Emoto. Efficient parallel tree reductions on distributed memory environments. In Proceedings of the 7th international conference on Computational Science, Part II, ICCS ’07, pp. 601–608, Berlin, Heidelberg, 2007. Springer-Verlag.
+-Kazuhiko Kakehi, Kiminori Matsuzaki, Kento Emoto, and Zhenjiang Hu. A practicable framework for tree reductions under distributed memory environments. Technical Report METR 2006-64, Department of Mathematical Informatics, University of Tokyo, 2006.
+
+Requirements:
+Scala 2.9.1
+Hadoop 0.20.203.1
+sbt 0.1
+
+Build:
+in main directory,
+-put commons-logging-1.1.1.jar and hadoop-core-0.20.203.0.jar in lib directory
+-sbt package
+
+Running:
+-put scala-library.jar in ${HADOOP}/lib
+-main/exec.sh
+-ex) ./exec.sh -l input/sample.in

@@ -1,0 +1,42 @@
+#OCaml
+*.annot
+*.cm[oai]
+*.a
+*.o
+*.cmx
+*.cmxs
+*.cmxa
+*.opt
+*.run
+*.depend
+*.input
+
+#OMake
+*.omc
+*omakedb*
+
+#Scala
+*.class
+*.log
+
+#misc
+*.crc
+*~
+*.jar
+\#*\#
+perf.data
+*goutputstream*
+
+# sbt
+main/target/
+main/project/target
+main/project/boot
+main/output*
+main/lib
+
+# directories
+main/input
+main/experiment
+
+# include
+!main/input/sample.in

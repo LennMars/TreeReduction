@@ -10,19 +10,19 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 
-object Algo2Job {
-  def run(input: Path, outputTmp: Path, output: Path, valueClassName: String, deflates: Boolean) {
+object ReduceAlgo2Job {
+  def run(input: Path, outputTmp: Path, output: Path, reduceClassName: String, deflates: Boolean) {
     DebugPrinter.println("**** mode 2 ****")
     DebugPrinter.println("*** first path running ***")
     val startJob1 = System.currentTimeMillis()
-    Algo2Job1.run(input, outputTmp, valueClassName, deflates)
+    ReduceAlgo2Job1.run(input, outputTmp, reduceClassName, deflates)
 
     DebugPrinter.println("\n*** second path running ***")
     val startJob2 = System.currentTimeMillis()
-    Algo2Job2.run(outputTmp, output, valueClassName, deflates)
+    ReduceAlgo2Job2.run(outputTmp, output, reduceClassName, deflates)
 
     val conf = new Configuration()
-    conf.set("valueClassName", valueClassName)
+    conf.set("reduceClassName", reduceClassName)
     val fs = output.getFileSystem(conf)
     val paths = fs.listStatus(output, new RegexPathFilter(".*part-r-.*")).map(_.getPath).toList
 
@@ -39,10 +39,10 @@ object Algo2Job {
   }
 }
 
-object Algo2Job1 {
-  def run(input: Path, outputTmp: Path, valueClassName: String, deflates: Boolean) {
+object ReduceAlgo2Job1 {
+  def run(input: Path, outputTmp: Path, reduceClassName: String, deflates: Boolean) {
     val conf = new org.apache.hadoop.mapred.JobConf()
-    conf.set("valueClassName", valueClassName)
+    conf.set("reduceClassName", reduceClassName)
     conf.set("outputTmp", outputTmp.getName)
     conf.set("outputTmpFull", outputTmp.toString)
     conf.setInt("mapred.reduce.tasks", 1) // important
@@ -64,11 +64,11 @@ object Algo2Job1 {
     org.apache.hadoop.mapred.FileInputFormat.addInputPath(conf, input)
     org.apache.hadoop.mapred.FileOutputFormat.setOutputPath(conf, outputTmp)
 
-    conf.setMapperClass(classOf[Algo2Map1])
+    conf.setMapperClass(classOf[ReduceAlgo2Map1])
     conf.setMapOutputKeyClass(classOf[NullWritable])
     conf.setMapOutputValueClass(classOf[HNFShapeWritable])
 
-    conf.setReducerClass(classOf[Algo2Reduce1])
+    conf.setReducerClass(classOf[ReduceAlgo2Reduce1])
     conf.setOutputKeyClass(classOf[NullWritable])
     conf.setOutputValueClass(classOf[NullWritable])
 
@@ -76,14 +76,14 @@ object Algo2Job1 {
   }
 }
 
-object Algo2Job2 {
-  def run(outputTmp: Path, output: Path, valueClassName: String, deflates: Boolean) {
+object ReduceAlgo2Job2 {
+  def run(outputTmp: Path, output: Path, reduceClassName: String, deflates: Boolean) {
     val offsetDepthMap = new Path(outputTmp, "offsetDepthMap")
     val matingPairsLeftFile = new Path(outputTmp, "matingPairsLeft")
     val matingPairsRightFile = new Path(outputTmp, "matingPairsRight")
 
     val conf = new Configuration()
-    conf.set("valueClassName", valueClassName)
+    conf.set("reduceClassName", reduceClassName)
     conf.set("offsetDepthMapFile", offsetDepthMap.toString)
     conf.set("matingPairsLeftFile", matingPairsLeftFile.toString)
     conf.set("matingPairsRightFile", matingPairsRightFile.toString)
@@ -100,14 +100,14 @@ object Algo2Job2 {
 
     FileOutputFormat.setOutputPath(job, output)
 
-    job.setMapperClass(classOf[Algo2Map2])
-    job.setReducerClass(classOf[Algo2Reduce2])
+    job.setMapperClass(classOf[ReduceAlgo2Map2])
+    job.setReducerClass(classOf[ReduceAlgo2Reduce2])
 
     job.setMapOutputKeyClass(classOf[MatingPairWritable])
     job.setMapOutputValueClass(classOf[Text])
 
     job.setOutputKeyClass(classOf[MatingPairWritable])
-    job.setOutputValueClass(classOf[AbstractValue#TripletWritable])
+    job.setOutputValueClass(classOf[AbstractReduce#TripletWritable])
 
     job.waitForCompletion(true)
   }

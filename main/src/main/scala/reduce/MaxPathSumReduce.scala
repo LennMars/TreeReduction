@@ -1,4 +1,4 @@
-class MaxPathSumValue extends AbstractValue{
+class MaxPathSumReduce extends AbstractReduce{
   type t1 = Int
   type t2 = Option[Int] // None means unit of max i.e. -infinity
   val hom = (x: t1) => Some(x)

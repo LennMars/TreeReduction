@@ -7,7 +7,7 @@ import org.apache.hadoop.fs.FileSystem
 import scala.collection.immutable.HashSet
 import scala.annotation.tailrec
 
-class Algo2Map2 extends Mapper[NullWritable,Text,MatingPairWritable,Text] {
+class ReduceAlgo2Map2 extends Mapper[NullWritable,Text,MatingPairWritable,Text] {
   def addPairs(set: HashSet[MatingPairWritable], offset: Long, reader: MapFile.Reader): HashSet[MatingPairWritable] = {
     val index = new LongWritable
     val toRead = new MatingPairArrayWritable
@@ -27,11 +27,11 @@ class Algo2Map2 extends Mapper[NullWritable,Text,MatingPairWritable,Text] {
 		   context: Mapper[NullWritable, Text, MatingPairWritable, Text]#Context)
   {
     val conf = context.getConfiguration
-    val vObj = Class.forName(conf.get("valueClassName")).getConstructors.apply(0).newInstance().asInstanceOf[AbstractValue]
-    val hNFObj = Class.forName("AbstractValue$HillNormalForm$").getConstructors.apply(0).newInstance(vObj)
+    val vObj = Class.forName(conf.get("reduceClassName")).getConstructors.apply(0).newInstance().asInstanceOf[AbstractReduce]
+    val hNFObj = Class.forName("AbstractReduce$HillNormalForm$").getConstructors.apply(0).newInstance(vObj)
     val ofStringMeth = hNFObj.getClass.getMethod("ofString", classOf[String])
 
-    val hNF = ofStringMeth.invoke(hNFObj, value.toString).asInstanceOf[AbstractValue#HillNormalForm]
+    val hNF = ofStringMeth.invoke(hNFObj, value.toString).asInstanceOf[AbstractReduce#HillNormalForm]
     val (myOffset, cs0, abs) = (hNF.offset, hNF.cs, hNF.abs)
 
     val fs = FileSystem.get(conf)
@@ -70,11 +70,11 @@ class Algo2Map2 extends Mapper[NullWritable,Text,MatingPairWritable,Text] {
       case None => setlr
     }
 
-    val tpieceConstr = Class.forName("AbstractValue$TripletPiece").getConstructors.apply(0)
+    val tpieceConstr = Class.forName("AbstractReduce$TripletPiece").getConstructors.apply(0)
     val tpieceText = new Text()
 
-    def set(d: Int, piece: Either[(Option[AbstractValue#t2], AbstractValue#t1, AbstractValue#t2), (AbstractValue#t2, Boolean)]) {
-      val s = tpieceConstr.newInstance(vObj, d.asInstanceOf[java.lang.Object], piece.asInstanceOf[java.lang.Object]).asInstanceOf[AbstractValue#TripletPiece].toShortString
+    def set(d: Int, piece: Either[(Option[AbstractReduce#t2], AbstractReduce#t1, AbstractReduce#t2), (AbstractReduce#t2, Boolean)]) {
+      val s = tpieceConstr.newInstance(vObj, d.asInstanceOf[java.lang.Object], piece.asInstanceOf[java.lang.Object]).asInstanceOf[AbstractReduce#TripletPiece].toShortString
       DebugPrinter.println("Map2.set: " + s)
       tpieceText.set(s)
     }

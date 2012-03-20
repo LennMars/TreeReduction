@@ -3,8 +3,8 @@ import org.apache.hadoop.conf.Configuration
 
 object Consummate {
   def exec(paths: List[Path], conf: Configuration) = {
-    val valueObj = Class.forName(conf.get("valueClassName")).getConstructors.apply(0).newInstance().asInstanceOf[AbstractValue]
-    val tCompanionObj = Class.forName("AbstractValue$Triplet$").getConstructors.apply(0).newInstance(valueObj)
+    val reduceObj = Class.forName(conf.get("reduceClassName")).getConstructors.apply(0).newInstance().asInstanceOf[AbstractReduce]
+    val tCompanionObj = Class.forName("AbstractReduce$Triplet$").getConstructors.apply(0).newInstance(reduceObj)
     val ofStringMeth = tCompanionObj.getClass.getMethod("ofString", classOf[String])
     val ofString = (s: String) => ofStringMeth.invoke(tCompanionObj, s)
 
@@ -13,11 +13,11 @@ object Consummate {
     DebugPrinter.println("\nremaining triplets: ")
     xs foreach DebugPrinter.println
 
-    val tObj = Class.forName("AbstractValue$Triplet").getConstructors.apply(0).newInstance(valueObj, null)
+    val tObj = Class.forName("AbstractReduce$Triplet").getConstructors.apply(0).newInstance(reduceObj, null)
     val distWrapMeth = tObj.getClass.getMethods.find(_.getName == "distWrap").get
     val rake = (p: java.lang.Object, c: java.lang.Object) => distWrapMeth.invoke(p, c)
 
-    val lastTriplet = Tree.contractDirect(rake, ((x: java.lang.Object) => x.asInstanceOf[AbstractValue#Triplet].represent.asInstanceOf[java.lang.Object]))(xs toArray)
-    lastTriplet.asInstanceOf[AbstractValue#Triplet].represent
+    val lastTriplet = Tree.contractDirect(rake, ((x: java.lang.Object) => x.asInstanceOf[AbstractReduce#Triplet].represent.asInstanceOf[java.lang.Object]))(xs toArray)
+    lastTriplet.asInstanceOf[AbstractReduce#Triplet].represent
   }
 }

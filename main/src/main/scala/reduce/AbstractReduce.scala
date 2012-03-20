@@ -11,7 +11,7 @@ import scala.collection.JavaConversions._
 import java.io.DataOutput
 import java.io.DataInput
 
-trait AbstractValue {
+trait AbstractReduce {
   type t1
   type t2
   val hom: t1 => t2

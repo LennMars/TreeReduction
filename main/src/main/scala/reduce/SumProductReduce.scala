@@ -1,4 +1,4 @@
-object IntValue extends AbstractValueMonotype {
+object SumProductReduce extends AbstractReduceMonotype {
   type t1 = Int
   val plus = (_: Int) + (_: Int)
   val mult = (_: Int) * (_: Int)

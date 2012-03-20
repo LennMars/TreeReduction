@@ -3,7 +3,7 @@ current_local="file://${current_local_raw}"
 current_hdfs="some_place_in_hdfs"
 jarname=treereduction_2.9.1-0.1.jar
 
-usage="Usage: $CMDNAME [-d | -l (dist|local)] [-a 1|2 (algorithm 1|2)] [-c (compress)] [-m <memo>] [-v <name of value class>] <input>"
+usage="Usage: $CMDNAME [-d | -l (dist|local)] [-a 1|2 (algorithm 1|2)] [-c (compress)] [-m <memo>] [-r <name of reduce class>] <input>"
 
 if [ $# -eq 0 ]; then
   echo $usage 1>&2
@@ -12,11 +12,11 @@ fi
 
 #default values
 mode=1
-value="MaxPathSumValue"
+value="MaxPathSumReduce"
 compress=""
 is_hdfs="FALSE"
 
-while getopts dla:m:v:c OPT
+while getopts dla:m:r:c OPT
 do
   case $OPT in
     "d" ) is_hdfs="TRUE" ;;
@@ -24,7 +24,7 @@ do
     "a" ) mode="${OPTARG}" ;;
     "c" ) compress="-c" ;;
     "m" ) memo="$OPTARG" ;;
-    "v" ) value="$OPTARG" ;;
+    "r" ) value="$OPTARG" ;;
       * ) echo $usage 1>&2
           exit 1 ;;
   esac
@@ -57,7 +57,7 @@ then
     hadoop fs -test -d output
     if [ $? -ne 0 ]; then hadoop fs -mkdir output; fi
     hadoop fs -rmr output/${testcase}*
-    time hadoop jar ${jarname} -mode ${mode} -value ${value} ${compress} ${input} ${output} ${current_local}/${logdir} 3>&1 1>&2 2>&3 1>>"${logdir}/std.log" | tee "${logdir}/err.log"
+    time hadoop jar ${jarname} -mode ${mode} -reduce ${value} ${compress} ${input} ${output} ${current_local}/${logdir} 3>&1 1>&2 2>&3 1>>"${logdir}/std.log" | tee "${logdir}/err.log"
 else
     echo "local mode"
     echo "environment: local" >> ${logdir}/std.log
@@ -65,6 +65,6 @@ else
     output="${current_local}/output/${testcase}"
     if [ ! -e "./output" ]; then mkdir output; fi
     rm -rf output/${testcase}*
-    time hadoop --config conf_local/ jar ${jarname} -mode ${mode} -value ${value} ${compress} ${input} ${output} ${current}/${logdir} 3>&1 1>&2 2>&3 1>>"${logdir}/std.log" | tee "${logdir}/err.log"
+    time hadoop --config conf_local/ jar ${jarname} -mode ${mode} -reduce ${value} ${compress} ${input} ${output} ${current}/${logdir} 3>&1 1>&2 2>&3 1>>"${logdir}/std.log" | tee "${logdir}/err.log"
 fi
 

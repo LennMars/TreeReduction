@@ -8,15 +8,15 @@ import org.apache.hadoop.mapred.lib.MultipleOutputs
 import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.mapred.SequenceFileOutputFormat
 
-class Algo2Map1
+class ReduceAlgo2Map1
 extends MapReduceBase
 with Mapper[LongWritable,Text,NullWritable,HNFShapeWritable] {
   var multipleOutputs: MultipleOutputs = null
-  var valueClassName = ""
+  var reduceClassName = ""
 
   override def configure(conf: JobConf) {
     multipleOutputs = new MultipleOutputs(conf)
-    valueClassName = conf.get("valueClassName")
+    reduceClassName = conf.get("reduceClassName")
   }
 
   override def map(key: LongWritable,
@@ -27,10 +27,10 @@ with Mapper[LongWritable,Text,NullWritable,HNFShapeWritable] {
     val value = value0.toString
 
     if(value != "") {
-      val v = Class.forName(valueClassName).getConstructors.apply(0).newInstance().asInstanceOf[AbstractValue]
-      val o = Class.forName("AbstractValue$TreeSerialized$").getConstructors.apply(0).newInstance(v).asInstanceOf[java.lang.Object]
+      val v = Class.forName(reduceClassName).getConstructors.apply(0).newInstance().asInstanceOf[AbstractReduce]
+      val o = Class.forName("AbstractReduce$TreeSerialized$").getConstructors.apply(0).newInstance(v).asInstanceOf[java.lang.Object]
       val m = o.getClass.getMethod("ofString", classOf[String], classOf[String])
-      val tree = m.invoke(o, value, " ").asInstanceOf[AbstractValue#TreeSerialized]
+      val tree = m.invoke(o, value, " ").asInstanceOf[AbstractReduce#TreeSerialized]
 
       val hNF = tree.hillNormalForm(key.get)
 

@@ -13,7 +13,7 @@ import scala.collection.immutable.Stack
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 
-class Algo2Reduce1
+class ReduceAlgo2Reduce1
 extends MapReduceBase
 with Reducer[NullWritable, HNFShapeWritable, NullWritable, NullWritable] {
 

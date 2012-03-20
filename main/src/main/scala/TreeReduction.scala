@@ -8,14 +8,14 @@ import org.apache.hadoop.conf.Configuration
 object TreeReduction {
 
   def main(args : Array[String]){
-    var valueClassName = ""
+    var reduceClassName = ""
     var isMode1 = true // mode 1 is default
     var deflates = false
 
     def getopt(i: Int): Int = {
       args(i) match {
-        case "-value" => {
-          valueClassName = args(i + 1)
+        case "-reduce" => {
+          reduceClassName = args(i + 1)
           getopt(i + 2)
         }
         case "-mode" => {
@@ -52,9 +52,9 @@ object TreeReduction {
     println("logdir: " + logdir)
 
     if(isMode1) {
-      Algo1Job.run(input, output, valueClassName, deflates)
+      ReduceAlgo1Job.run(input, output, reduceClassName, deflates)
     } else {
-      Algo2Job.run(input, outputTmp, output, valueClassName, deflates)
+      ReduceAlgo2Job.run(input, outputTmp, output, reduceClassName, deflates)
     }
   }
 }

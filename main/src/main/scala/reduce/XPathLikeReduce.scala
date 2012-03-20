@@ -1,6 +1,6 @@
 import scala.math.BigInt
 
-object XPathLikeValue extends AbstractValueMonotype {
+object XPathLikeReduce extends AbstractReduceMonotype {
   type t1 = BigInt
   val size = 10
   val zero = BigInt(0)

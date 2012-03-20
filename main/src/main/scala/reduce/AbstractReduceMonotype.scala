@@ -1,4 +1,4 @@
-trait AbstractValueMonotype extends AbstractValue {
+trait AbstractReduceMonotype extends AbstractReduce {
   type t2 = t1
   val hom = (a: t1) => a
   val dist = {

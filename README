@@ -9,11 +9,12 @@ Hadoop 0.20.203.1
 sbt 0.1
 
 Build:
+commons-logging-1.1.1.jar and hadoop-core-0.20.203.0.jar must be place
 in main directory,
--put commons-logging-1.1.1.jar and hadoop-core-0.20.203.0.jar in lib directory
+-put  into lib directory
 -sbt package
 
 Running:
 -put scala-library.jar in ${HADOOP}/lib
--main/exec.sh
+-main/exec.sh <options> <input>
 -ex) ./exec.sh -l input/sample.in
